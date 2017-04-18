@@ -6,7 +6,7 @@ var io      = require('socket.io')(http);
 var path    = require('path');
 var mongoose = require('mongoose');
 
-mongoose.connect("mongodb://admin:admin@cluster0-shard-00-00-qkzvq.mongodb.net:27017,cluster0-shard-00-01-qkzvq.mongodb.net:27017,cluster0-shard-00-02-qkzvq.mongodb.net:27017/admin?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin");
+mongoose.connect("mongodb://admin:admin@cluster0-shard-00-00-qkzvq.mongodb.net:27017,cluster0-shard-00-01-qkzvq.mongodb.net:27017,cluster0-shard-00-02-qkzvq.mongodb.net:27017/cluster0?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin");
 var db = mongoose.connection;
 db.once("open", function()
 {
@@ -15,7 +15,6 @@ db.once("open", function()
 db.on("error", function(err){
   console.log("DB ERROR : ", err);
 });
-
 
 app.use(express.static(path.join(__dirname,"public")));
 
