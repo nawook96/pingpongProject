@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,6 +19,11 @@
   "homepage": "https://github.com/nawook96/pingpongProject#readme",
   "dependencies": {
     "express": "^4.15.2",
+    "mongoose": "^4.9.5",
     "socket.io": "^1.7.3"
+  },
+  "engines": {
+      "node": "7.9.0",
+      "npm": "4.2.0"
   }
 }
