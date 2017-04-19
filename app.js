@@ -8,14 +8,14 @@ var MongoClient = require('mongodb').MongoClient;
 
 var uri = "mongodb://admin:admin@cluster0-shard-00-00-qkzvq.mongodb.net:27017,cluster0-shard-00-01-qkzvq.mongodb.net:27017,cluster0-shard-00-02-qkzvq.mongodb.net:27017/admin?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin";
 MongoClient.connect(uri, function(err) {
-  console.log("DB ERROR : ", err);
+  console.log("DB connected!");
 });
 
 app.use(express.static(path.join(__dirname,"public")));
 
 var port = process.env.PORT || 3000;
 http.listen(port, function(){
-  console.log("server on!: http://localhost:3000/");
+  console.log("server on!");
 });
 
 var objects = {};
