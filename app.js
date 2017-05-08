@@ -53,9 +53,7 @@ var update = setInterval(function(){
   var idArray=[];
   var statusArray={};
   for(var id in io.sockets.clients().connected){
-    if(objects[id].keypress[LEFT])  objects[id].status.x -= 2;
     if(objects[id].keypress[UP])    objects[id].status.y -= 2;
-    if(objects[id].keypress[RIGHT]) objects[id].status.x += 2;
     if(objects[id].keypress[DOWN])  objects[id].status.y += 2;
 
     idArray.push(id);
@@ -71,9 +69,8 @@ function UserObject() {
     color += (Math.floor(Math.random()*16)).toString(16);
   }
   this.status = {};
-  this.status.x = 0;
   this.status.y = 0;
-  this.status.height = 20;
+  this.status.height = 100;
   this.status.width = 20;
   this.status.color = color;
   this.keypress = [];
