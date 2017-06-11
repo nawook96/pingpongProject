@@ -18,81 +18,38 @@ http.listen(port, function(){
   console.log("server on!");
 });
 
-var objects = {};
-var posi = 0;
+var SETTINGS = require("./js/Setting.js");
+
+var lobbyManager = new (require('./js/LobbyManager.js'))(io);
+var roomManager = new (require('./js/RoomManager.js'))(io);
+var gameManager = new (require('./js/GameManager.js'))(io, roomManager);
 
 // 접속 유저의 정보를 저장하는 개체 생성
 io.on('connection', function(socket){
   console.log('user connected: ', socket.id);
-  switch(posi){
-    case 0:
-      objects[socket.id] = new UserObject(socket.id, "LEFT");
-      posi = 1;
-      break;
-    case 1:
-      objects[socket.id] = new UserObject(socket.id, "RIGHT");
-      posi = 0;
-      break;
-  }
+  lobbyManager.push(socket);
+  lobbyManager.dispatch(roomManager);
 
-  io.to(socket.id).emit('connected', GAME_SETTINGS);
+  io.to(socket.id).emit('connected', SETTINGS);
 
-// 접속 종료시 해당 개체 삭제, discinnect 이벤트를 client에 보냄
   socket.on('disconnect', function(){
-    delete objects[socket.id];
+    var roomIndex = roomManager.roomIndex[socket.id];
+    if(roomIndex){
+      roomManager.destroy(roomIndex, lobbyManager);
+    }
+    lobbyManager.kick(socket);
+    lobbyManager.dispatch(roomManager);
     console.log('user disconnected: ', socket.id);
   });
-
-// 키가 눌려졌을 시 키 값을 저장
   socket.on('keydown', function(keyCode){
-    objects[socket.id].keypress[keyCode]=true;
+    var roomIndex = roomManager.roomIndex[socket.id];
+    if(roomIndex){
+      roomManager.rooms[roomIndex].objects[socket.id].keypress[keyCode] = true;
+    }
   });
-
-// 키를 안 누르고 있을 시 키 값 삭제
   socket.on('keyup', function(keyCode){
-    delete objects[socket.id].keypress[keyCode];
+    var roomIndex = roomManager.roomIndex[socket.id];
+    if(roomIndex)
+      delete roomManager.rooms[roomIndex].objects[socket.id].keypress[keyCode];
   });
 });
-
-var LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
-var GAME_SETTINGS = {
-  WIDTH : 700, HEIGHT : 400, BORDER_WIDTH : 15, BACKGROUND_COLOR : "#FFFFFF"
-};
-
-// 10ms 마다 키가 눌려져 있는지 안 눌려져 있는지 확인 후 눌려져 있다면 좌표 이동 및 정보 업데이트
-var update = setInterval(function(){
-  var idArray=[];
-  var statusArray={};
-  for(var id in io.sockets.clients().connected){
-    if(objects[id].keypress[LEFT])  objects[id].status.x -= 0;
-    if(objects[id].keypress[UP])    objects[id].status.y -= 2;
-    if(objects[id].keypress[RIGHT]) objects[id].status.x += 0;
-    if(objects[id].keypress[DOWN])  objects[id].status.y += 2;
-
-    idArray.push(id);
-    statusArray[id]=objects[id].status;
-  }
-  io.emit('update',idArray, statusArray);
-},10);
-
-// 유저 개체의 생성자, x,y 좌표, width, height, color 저장
-function UserObject(id, position) {
-  var color="#";
-  for(var i = 0; i < 6; i++ ){
-    color += (Math.floor(Math.random()*16)).toString(16);
-  }
-  this.status = {};
-  this.status.height = 80;
-  this.status.width = 15;
-  switch(position){
-    case "LEFT":
-      this.status.x = 0;
-      break;
-    case "RIGHT":
-      this.status.x = GAME_SETTINGS.WIDTH -this.status.width;
-      break;
-  }
-  this.status.y = 0;
-  this.status.color = color;
-  this.keypress = [];
-}
