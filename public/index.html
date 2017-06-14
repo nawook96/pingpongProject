@@ -47,6 +47,12 @@
               ctx.stroke();
               ctx.fill();
               break;
+            case "text":
+              ctx.font = status.size+"px "+status.font;
+              ctx.fillStyle = status.color;
+              ctx.textAlign = status.textAlign;
+              ctx.fillText(status.text,   status.x ,status.y);
+              break;
           }
         });
       });
@@ -76,11 +82,11 @@
         }
       }
       socket.on('waiting', function(){
-        console.log("I'm waiting!");
+        console.log("waiting");
       });
 
       socket.on('in', function(){
-        console.log("I'm in!");
+        console.log("playing");
       });
     })
     </script>

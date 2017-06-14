@@ -7,6 +7,7 @@ var UNIT = 2;
 function Player(id,position){
   BaseObject.call(this);
   var color = "#FFFFFF";
+  this.role = "player";
   this.status.shape = "rectangle";
   this.status.height = SETTINGS.PLAYER.HEIGHT;
   this.status.width = SETTINGS.PLAYER.WIDTH;
@@ -21,6 +22,7 @@ function Player(id,position){
   }
   this.status.color = color;
   this.id = id;
+  this.score = 0;
   this.keypress = {};
 }
 Player.prototype = new BaseObject();

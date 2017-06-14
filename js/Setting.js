@@ -15,6 +15,11 @@ var SETTINGS = {
   NET : {
     WIDTH : 6,
     LINE_COLOR : "#FFFFFF"
+  },
+  SCORE : {
+    Y : 50,
+    SIZE : 30,
+    GAP : 50
   }
 };
 
